@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -40,7 +41,7 @@ public class RestExceptionHandler {
 	private String invalidPathParam;
 	
 	
-	@ExceptionHandler(value = {NoHandlerFoundException.class, NoSuchElementException.class})
+	@ExceptionHandler(value = {NoHandlerFoundException.class, NoSuchElementException.class, HttpClientErrorException.NotFound.class})
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ResponseException notFoundException(HttpServletRequest request, Exception exception) {
 		return new ResponseException(request, resourceNotFound, exception.getMessage());
@@ -53,7 +54,7 @@ public class RestExceptionHandler {
 	}
 	
 	@ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseStatus(value = HttpStatus.METHOD_NOT_ALLOWED)
 	public ResponseException badRequestException(HttpServletRequest request, HttpRequestMethodNotSupportedException exception) {
 		return new ResponseException(request, methodNotSupported, exception.getMessage());
 	}

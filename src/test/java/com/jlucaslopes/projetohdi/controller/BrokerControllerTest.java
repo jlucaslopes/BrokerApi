@@ -32,5 +32,16 @@ class BrokerControllerTest {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    void getInactiveBrokerInfoShouldReturnMethodNotAllowed() {
+        ResponseEntity<BrokerDataDTOResponse> response = restTemplate.postForEntity("/isActive/{document}",null, BrokerDataDTOResponse.class, 11725034000L);
+        Assertions.assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.getStatusCode());
+    }
 
+
+    @Test
+    void shouldUpdateBrokerStatus() {
+        ResponseEntity<BrokerDataDTOResponse> response = restTemplate.postForEntity("/isActive/{document}",null, BrokerDataDTOResponse.class, 11725034000L);
+        Assertions.assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.getStatusCode());
+    }
 }

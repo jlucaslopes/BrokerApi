@@ -21,17 +21,20 @@ public class BrokerService {
         }
 
        public BrokerData isCorretorActive (String id) throws ResponseBusinessException {
-        RestTemplate restTemplate = new RestTemplateBuilder()
-                .rootUri("https://607732991ed0ae0017d6a9b0.mockapi.io/insurance/v1/brokerData")
-                .build();
-        BrokerData brokerData = restTemplate.getForObject("/{id}", BrokerData.class, id);
+           BrokerData brokerData = getBrokerDataFromAPI(id);
 
-        if (Objects.requireNonNull(brokerData).isActive()){
+           if (Objects.requireNonNull(brokerData).isActive()){
             return brokerData;
         }
         throw new ResponseBusinessException("Broker is not active");
     }
 
+    private BrokerData getBrokerDataFromAPI(String id) throws ResponseBusinessException {
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .rootUri("https://607732991ed0ae0017d6a9b0.mockapi.io/insurance/v1/brokerData")
+                .build();
+            return restTemplate.getForObject("/{id}", BrokerData.class, id);
+    }
 
     public Broker getBrokerByDocument(String document) {
         RestTemplate restTemplate = new RestTemplateBuilder()
@@ -40,11 +43,18 @@ public class BrokerService {
         return restTemplate.getForObject("/{document}", Broker.class,document);
     }
 
-    public void updateBroker(BrokerData brokerData) {
+    public void updateBroker(String id) throws ResponseBusinessException {
+        BrokerData brokerData = getBrokerDataFromAPI(id);
 
-           RestTemplate restTemplate = new RestTemplateBuilder()
+        BrokerData newBrokerData = new BrokerData(
+                brokerData.getCode(),
+                !brokerData.isActive(),
+                brokerData.getCommissionRate());
+
+        RestTemplate restTemplate = new RestTemplateBuilder()
                    .rootUri("https://607732991ed0ae0017d6a9b0.mockapi.io/insurance/v1/brokerData")
                    .build();
-           restTemplate.put("/{id}",brokerData, brokerData.getCode());
+
+        restTemplate.put("/{id}",newBrokerData, newBrokerData.getCode());
     }
 }

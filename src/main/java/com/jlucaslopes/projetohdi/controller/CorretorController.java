@@ -26,11 +26,9 @@ public class CorretorController {
 
     }
 
-    @PutMapping("change-broker-status")
-    public ResponseEntity changeBrokerStatus(@RequestBody final BrokerData brokerData) {
-
-        //TODO Faça uma validação para o retorno da API
-        brokerService.updateBroker(brokerData);
+    @PutMapping("change-broker-status/{id}")
+    public ResponseEntity changeBrokerStatus(@PathVariable final String id) throws ResponseBusinessException {
+        brokerService.updateBroker(id);
         return ResponseEntity.noContent().build();
     }
 }
